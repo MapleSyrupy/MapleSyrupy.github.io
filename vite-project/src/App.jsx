@@ -357,7 +357,6 @@ function GeneralRange(data1) {
         data1[key[0]].map((x) => {
           return (
             <div key={x.key}>
-
               <FormLabel sx={{ marginLeft: "30px" }} >Name <Chip size="sm" sx={{ float: 'right', width: "auto" }} onClick={() => deleteThis(x.key)}>X</Chip> </FormLabel>
               {key[0] === 'homework' ? <Autocomplete
                 sx={{ m: 2 }}
@@ -366,6 +365,7 @@ function GeneralRange(data1) {
                 options={options.sort((History, b) => b.subject.localeCompare(History.subject))}
                 groupBy={(option) => option.subject}
                 getOptionLabel={(option)=>option.Name||data1[key[0]].filter(y => y.key === x.key)[0].name}
+                value = {data1[key[0]].filter(y => y.key === x.key)[0].name}
                 onInputChange={(event, value) => homeworkNameData(value, x.key)}
                 
               /> : <Input sx={{ m: 2 }} defaultValue={x.name} onInput={(e) => searchArray(e.target.value)}/>}
