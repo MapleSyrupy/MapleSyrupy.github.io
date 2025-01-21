@@ -267,7 +267,7 @@ function GeneralRange(data1) {
     { "Name": "Speech and Debate 2", "subject": "English" },
     { "Name": "Engineering Technology", "subject": "Career/Technical" },
     { "Name": "Advanced Engineering Technology", "subject": "Career/Technical" },
-    { "Name": "Computer Science and Programming", "subject": "Technology" },
+    { "Name": "Computer Science and Programming","TimeNeeded":"2","subject": "Technology" },
     { "Name": "AP Computer Science A", "subject": "Technology" },
     { "Name": "AP Human Geography", "subject": "Social Studies" },
     { "Name": "Sociology", "subject": "Social Studies" },
@@ -342,7 +342,12 @@ function GeneralRange(data1) {
       return 0
     }
   }
-
+  const options = searchOptions.map((option)=>{
+    return{
+      subject:option.subject,
+      ...option,
+    }
+  })
   return (
     <>
 
@@ -350,7 +355,6 @@ function GeneralRange(data1) {
       <h2 style={{ margin: "15px" }}>{key[0] === 'homework' ? 'Homework' : key[0] === 'personalTime' ? 'Personal Time' : 'Necessities'}</h2>
       {
         data1[key[0]].map((x) => {
-          {console.log(data1[key[0]].filter(y => y.key === x.key)[0].name)}
           return (
             <div key={x.key}>
 
@@ -359,10 +363,9 @@ function GeneralRange(data1) {
                 sx={{ m: 2 }}
                 freeSolo
                 placeholder="Type anything"
-                options={searchOptions.sort((History, b) => b.subject.localeCompare(History.subject))}
+                options={options.sort((History, b) => b.subject.localeCompare(History.subject))}
                 groupBy={(option) => option.subject}
-                getOptionLabel={(option) => option.Name||""}
-                value = {data1[key[0]].filter(y => y.key === x.key)[0].name}
+                getOptionLabel={(option)=>option.Name||data1[key[0]].filter(y => y.key === x.key)[0].name}
                 onInputChange={(event, value) => homeworkNameData(value, x.key)}
                 
               /> : <Input sx={{ m: 2 }} defaultValue={x.name} onInput={(e) => searchArray(e.target.value)}/>}
@@ -393,7 +396,7 @@ function App() {
   const [count, setCount] = useState(false);
   const [school, setSchool] = useState(0);
   const [personalTime, setPersonalTime] = useState([{ name: "generic personal time", value: 0, key: crypto.randomUUID() }]);
-  const [homework, setHomework] = useState([{ name: "generic homework", value: 0, key: crypto.randomUUID() }]);
+  const [homework, setHomework] = useState([{ name: "Beginning Orchestra", value: 0, key: crypto.randomUUID() }]);
   const [homeworkTotal, setHomeworkTotal] = useState(0);
   const [personalTimeTotal, setPersonalTimeTotal] = useState(0);
   const [requires, setRequires] = useState([{ name: "sleep", value: 0, key: crypto.randomUUID() }]);
