@@ -414,15 +414,19 @@ function App() {
   const [chooseSchools, setChooseSchools] = useState('Folsom');
   const [cookies, setCookie, removeCookie] = useCookies(['Data']);
   useEffect(()=>{
-    setCookie("Data",homework);
-  },[])
-  useEffect(() => {
     if (cookies) {
-      setHomework(cookies.Data.homework);
-      setPersonalTime(cookies.Data.personalTime);
-      setRequires(cookies.Data.requires)
+      try{
+        setHomework(cookies.Data.homework);
+        setPersonalTime(cookies.Data.personalTime);
+        setRequires(cookies.Data.requires)
+      }catch(e){
+        setCookie("Data",{homework,personalTime,requires});
+      }
+      
     }
-  }, [])
+
+  },[])
+
   useEffect(() => {
     if (total < 0) {
       setoverLoad(true)
