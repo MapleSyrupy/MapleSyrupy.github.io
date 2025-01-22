@@ -14,7 +14,8 @@ import Tab from '@mui/joy/Tab';
 import TabPanel from '@mui/joy/TabPanel';
 import Chip from '@mui/joy/Chip';
 import Autocomplete from '@mui/joy/Autocomplete';
-// import { useCookies } from "react-cookie";
+import { useCookies } from "react-cookie";
+import {matchSorter} from 'match-sorter'
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import './App.css'
@@ -70,18 +71,18 @@ function GeneralRange(data1) {
     { "Name": "AP English Language & Composition", "TimeNeeded": "4", "subject": "English" },
     { "Name": "AP English Literature & Composition", "TimeNeeded": "4", "subject": "English" },
     { "Name": "CSU ERWC", "TimeNeeded": "1", "subject": "English" },
-    { "Name": "Integrated Math 1", "TimeNeeded": "2", "subject": "Math" },
-    { "Name": "Integrated Math 2", "TimeNeeded": "2", "subject": "Math" },
-    { "Name": "Integrated Math 3", "TimeNeeded": "3", "subject": "Math" },
-    { "Name": "Financial Algebra", "TimeNeeded": "2.5", "subject": "Math" },
-    { "Name": "Statistics/Problem Solving", "TimeNeeded": "1.5", "subject": "Math" },
-    { "Name": "AP Statistics", "TimeNeeded": "4", "subject": "Math" },
-    { "Name": "Trigonometry", "TimeNeeded": "3", "subject": "Math" },
-    { "Name": "Pre-Calculus", "TimeNeeded": "4", "subject": "Math" },
-    { "Name": "Highlights of Calculus", "TimeNeeded": "3", "subject": "Math" },
-    { "Name": "AP Calculus AB", "TimeNeeded": "7", "subject": "Math" },
-    { "Name": "AP Calculus BC", "TimeNeeded": "5", "subject": "Math" },
-    { "Name": "Exploration of Data", "TimeNeeded": "1", "subject": "Math" },
+    { "Name": "Integrated Math 1", "TimeNeeded": "2", "subject": "Mathematics" },
+    { "Name": "Integrated Math 2", "TimeNeeded": "2", "subject": "Mathematics" },
+    { "Name": "Integrated Math 3", "TimeNeeded": "3", "subject": "Mathematics" },
+    { "Name": "Financial Algebra", "TimeNeeded": "2.5", "subject": "Mathematics" },
+    { "Name": "Statistics/Problem Solving", "TimeNeeded": "1.5", "subject": "Mathematics" },
+    { "Name": "AP Statistics", "TimeNeeded": "4", "subject": "Mathematics" },
+    { "Name": "Trigonometry", "TimeNeeded": "3", "subject": "Mathematics" },
+    { "Name": "Pre-Calculus", "TimeNeeded": "4", "subject": "Mathematics" },
+    { "Name": "Highlights of Calculus", "TimeNeeded": "3", "subject": "Mathematics" },
+    { "Name": "AP Calculus AB", "TimeNeeded": "7", "subject": "Mathematics" },
+    { "Name": "AP Calculus BC", "TimeNeeded": "5", "subject": "Mathematics" },
+    { "Name": "Exploration of Data", "TimeNeeded": "1", "subject": "Mathematics" },
     { "Name": "Biology: The Living Earth", "TimeNeeded": "2", "subject": "Science" },
     { "Name": "Physics in the Universe", "TimeNeeded": "1.5", "subject": "Science" },
     { "Name": "Chemistry in the Earth System", "TimeNeeded": "2", "subject": "Science" },
@@ -144,12 +145,12 @@ function GeneralRange(data1) {
     { "Name": "Exploring Computer Science", "TimeNeeded": "0", "subject": "College Prep Elective" },
     { "Name": "Computer Science and Programming", "TimeNeeded": "0", "subject": "College Prep Elective" },
     { "Name": "Computer Game Design", "TimeNeeded": "0", "subject": "College Prep Elective" },
-    { "Name": "AP Computer Science A", "TimeNeeded": "3", "subject": "Math" },
-    { "Name": "Engineering Technology", "TimeNeeded": "2", "subject": "College Prep Elective" },
+    { "Name": "AP Computer Science A", "TimeNeeded": "3", "subject": "Mathematics" },
+    { "Name": "Introduction to Engineering Technology", "TimeNeeded": "2", "subject": "College Prep Elective" },
     { "Name": "Advanced Engineering Technology", "TimeNeeded": "2", "subject": "College Prep Elective" },
     { "Name": "Architectural Engineering", "TimeNeeded": "2", "subject": "College Prep Elective" },
     { "Name": "Introduction to Product Innovation Design & Manufacturing", "TimeNeeded": "0.3", "subject": "College Prep Elective" },
-    { "Name": "Advanaced Product Innovation Design & Manufacturing", "TimeNeeded": "0.3", "subject": "College Prep Elective" },
+    { "Name": "Advanced Product Innovation Design & Manufacturing", "TimeNeeded": "0.3", "subject": "College Prep Elective" },
     { "Name": "Health Education", "TimeNeeded": "0.5", "subject": "College Prep Elective" },
     { "Name": "Enriched Health Education", "TimeNeeded": "0.5", "subject": "College Prep Elective" },
     { "Name": "Fitness 1", "TimeNeeded": "0.3", "subject": "College Prep Elective" },
@@ -186,17 +187,17 @@ function GeneralRange(data1) {
     { "Name": "AP English Literature", "subject": "English" },
     { "Name": "Beginning Comp", "subject": "English" },
     { "Name": "English Foundations 1, 2, 3, 4", "subject": "English" },
-    { "Name": "Integrated Math 1 with Support 1 and 2", "subject": "Math" },
-    { "Name": "Integrated Math 1", "subject": "Math" },
-    { "Name": "Integrated Math 2 Foundations", "subject": "Math" },
-    { "Name": "Integrated Math 2", "subject": "Math" },
-    { "Name": "Integrated Math 3", "subject": "Math" },
-    { "Name": "Financial Algebra", "subject": "Math" },
-    { "Name": "Pre-Calculus", "subject": "Math" },
-    { "Name": "AP Calculus A/B", "subject": "Math" },
-    { "Name": "AP Calculus B/C", "subject": "Math" },
-    { "Name": "AP Statistics", "subject": "Math" },
-    { "Name": "Personal Business Finance", "subject": "Math" },
+    { "Name": "Integrated Math 1 with Support 1 and 2", "subject": "Mathematics" },
+    { "Name": "Integrated Math 1", "subject": "Mathematics" },
+    { "Name": "Integrated Math 2 Foundations", "subject": "Mathematics" },
+    { "Name": "Integrated Math 2", "subject": "Mathematics" },
+    { "Name": "Integrated Math 3", "subject": "Mathematics" },
+    { "Name": "Financial Algebra", "subject": "Mathematics" },
+    { "Name": "Pre-Calculus", "subject": "Mathematics" },
+    { "Name": "AP Calculus A/B", "subject": "Mathematics" },
+    { "Name": "AP Calculus B/C", "subject": "Mathematics" },
+    { "Name": "AP Statistics", "subject": "Mathematics" },
+    { "Name": "Personal Business Finance", "subject": "Mathematics" },
     { "Name": "Biology: The Living Earth", "subject": "Science" },
     { "Name": "Chemistry of the Earth’s Systems", "subject": "Science" },
     { "Name": "Honors Chemistry of the Earth’s Systems", "subject": "Science" },
@@ -257,7 +258,7 @@ function GeneralRange(data1) {
     { "Name": "Careers in Adv. Manufacturing and the Trades", "subject": "Career/Technical" },
     { "Name": "Video Production 2", "subject": "Arts" },
     { "Name": "Video Production 3", "subject": "Arts" },
-    { "Name": "Peer Academic Tutor (Math)", "subject": "Career/Technical" },
+    { "Name": "Peer Academic Tutor (Mathematics)", "subject": "Career/Technical" },
     { "Name": "Intro to Kinesiology", "subject": "Physical Education" },
     { "Name": "Sports Medicine", "subject": "Physical Education" },
     { "Name": "Yearbook", "subject": "Career/Technical" },
@@ -348,6 +349,13 @@ function GeneralRange(data1) {
       ...option,
     }
   })
+  const filterOptions = (options,{inputValue}) =>{
+    // console.log(matchSorter(options,inputValue,{keys:["Name"]}))
+    
+    if(inputValue!=='undefined'){
+      return matchSorter(options,inputValue,{keys:[{threshold:matchSorter.rankings.CONTAINS,key:"Name"},"subject"]}).sort((History, b) => b.subject.localeCompare(History.subject))
+    }
+  }
   return (
     <>
 
@@ -362,12 +370,12 @@ function GeneralRange(data1) {
                 sx={{ m: 2 }}
                 freeSolo
                 placeholder="Type anything"
-                options={options.sort((History, b) => b.subject.localeCompare(History.subject))}
                 groupBy={(option) => option.subject}
+                options={options.sort((History, b) => b.subject.localeCompare(History.subject))}
                 getOptionLabel={(option)=>option.Name||data1[key[0]].filter(y => y.key === x.key)[0].name}
-                value = {data1[key[0]].filter(y => y.key === x.key)[0].name}
+                value={data1[key[0]].filter(y => y.key === x.key)[0].name}
                 onInputChange={(event, value) => homeworkNameData(value, x.key)}
-                
+                filterOptions={filterOptions}
               /> : <Input sx={{ m: 2 }} defaultValue={x.name} onInput={(e) => searchArray(e.target.value)}/>}
 
 
@@ -378,7 +386,7 @@ function GeneralRange(data1) {
                 onChange={(e) => homeworkData(e.target.value, x.key)}
                 marks
                 value={data1[key[0]].filter(y => y.key === x.key)[0].value}
-                max={key[0] === "homework" ? 16 : key[0] === "personalTime" ? 50 : 50}
+                max={key[0] === "homework" ? 16 : key[0] === "personalTime" ? 50 : 70}
                 min={getValue(x.name)}
                 valueLabelDisplay="auto"
               />
@@ -404,19 +412,17 @@ function App() {
   const [total, setTotal] = useState(168);
   const [overLoad, setoverLoad] = useState(false);
   const [chooseSchools, setChooseSchools] = useState('Folsom');
-  // const [cookies, setCookie, removeCookie] = useCookies(['Data']);
-  // useEffect(()=>{
-  //   setCookie("Data",homework);
-  //   console.log(cookies)
-  // },[])
-  // useEffect(() => {
-  //   if (cookies) {
-  //     console.log(cookies)
-  //     setHomework(cookies.Data.homework);
-  //     setPersonalTime(cookies.Data.personalTime);
-  //     setRequires(cookies.Data.requires)
-  //   }
-  // }, [])
+  const [cookies, setCookie, removeCookie] = useCookies(['Data']);
+  useEffect(()=>{
+    setCookie("Data",homework);
+  },[])
+  useEffect(() => {
+    if (cookies) {
+      setHomework(cookies.Data.homework);
+      setPersonalTime(cookies.Data.personalTime);
+      setRequires(cookies.Data.requires)
+    }
+  }, [])
   useEffect(() => {
     if (total < 0) {
       setoverLoad(true)
@@ -460,7 +466,7 @@ function App() {
     let calculation = 168 - (schoolValue + homeworkTotal + personalTimeTotal + requriesTotal);
     calculation = calculation || 0
     setTotal(calculation)
-    // setCookie("Data", { homework, personalTime, requires }, { expires: new Date(newDate.getFullYear() + 1, newDate.getMonth(), newDate.getDay()) });
+    setCookie("Data", { homework, personalTime, requires }, { expires: new Date(newDate.getFullYear() + 1, newDate.getMonth(), newDate.getDay()) });
   }, [homework, school, homeworkTotal, personalTime, personalTimeTotal, requires, requriesTotal]);
   function schoolData(x) {
     x = x || 0
