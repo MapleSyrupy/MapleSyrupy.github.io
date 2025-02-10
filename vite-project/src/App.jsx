@@ -14,10 +14,16 @@ import Tab from '@mui/joy/Tab';
 import TabPanel from '@mui/joy/TabPanel';
 import Chip from '@mui/joy/Chip';
 import Autocomplete from '@mui/joy/Autocomplete';
-import { useCookies } from "react-cookie";
-import {matchSorter} from 'match-sorter'
+import { Cookies, useCookies } from "react-cookie";
+import Table from '@mui/joy/Table';
+import { useRef } from "react";
+import { matchSorter } from 'match-sorter'
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
+import Modal from '@mui/joy/Modal';
+import ModalClose from '@mui/joy/ModalClose';
+import ModalDialog from '@mui/joy/ModalDialog';
+import { useReactToPrint } from "react-to-print";
 import './App.css'
 
 
@@ -268,7 +274,7 @@ function GeneralRange(data1) {
     { "Name": "Speech and Debate 2", "subject": "English" },
     { "Name": "Engineering Technology", "subject": "Career/Technical" },
     { "Name": "Advanced Engineering Technology", "subject": "Career/Technical" },
-    { "Name": "Computer Science and Programming","TimeNeeded":"2","subject": "Technology" },
+    { "Name": "Computer Science and Programming", "TimeNeeded": "2", "subject": "Technology" },
     { "Name": "AP Computer Science A", "subject": "Technology" },
     { "Name": "AP Human Geography", "subject": "Social Studies" },
     { "Name": "Sociology", "subject": "Social Studies" },
@@ -343,18 +349,22 @@ function GeneralRange(data1) {
       return 0
     }
   }
-  const options = searchOptions.map((option)=>{
-    return{
-      subject:option.subject,
+  const options = searchOptions.map((option) => {
+    return {
+      subject: option.subject,
       ...option,
     }
   })
-  const filterOptions = (options,{inputValue}) =>{
+  const filterOptions = (options, { inputValue }) => {
     // console.log(matchSorter(options,inputValue,{keys:["Name"]}))
-    
-    if(inputValue!=='undefined'){
-      return matchSorter(options,inputValue,{keys:[{threshold:matchSorter.rankings.CONTAINS,key:"Name"},"subject"]}).sort((History, b) => b.subject.localeCompare(History.subject))
+
+    try {
+      return matchSorter(options, inputValue, { keys: [{ threshold: matchSorter.rankings.CONTAINS, key: 'subject' }, "Name"] }).sort((History, b) => b.subject.localeCompare(History.subject))
     }
+    catch (e) {
+      return options
+    }
+
   }
   return (
     <>
@@ -365,18 +375,18 @@ function GeneralRange(data1) {
         data1[key[0]].map((x) => {
           return (
             <div key={x.key}>
-              <FormLabel sx={{ marginLeft: "30px" }} >Name <Chip size="sm" sx={{ float: 'right', width: "auto" }} onClick={() => deleteThis(x.key)}>X</Chip> </FormLabel>
+              <FormLabel sx={{ marginLeft: "30px",margin:1 }} >Name </FormLabel><Chip size="sm" sx= {{float:'right'}} onClick={() => deleteThis(x.key)}>X</Chip>
               {key[0] === 'homework' ? <Autocomplete
-                sx={{ m: 2 }}
+                sx={{ m: 3 }}
                 freeSolo
                 placeholder="Type anything"
                 groupBy={(option) => option.subject}
                 options={options.sort((History, b) => b.subject.localeCompare(History.subject))}
-                getOptionLabel={(option)=>option.Name||data1[key[0]].filter(y => y.key === x.key)[0].name}
+                getOptionLabel={(option) => option.Name || data1[key[0]].filter(y => y.key === x.key)[0].name}
                 value={data1[key[0]].filter(y => y.key === x.key)[0].name}
                 onInputChange={(event, value) => homeworkNameData(value, x.key)}
                 filterOptions={filterOptions}
-              /> : <Input sx={{ m: 2 }} defaultValue={x.name} onInput={(e) => searchArray(e.target.value)}/>}
+              /> : <Input sx={{ m: 2 }} defaultValue={x.name} onInput={(e) => searchArray(e.target.value)} />}
 
 
               <FormLabel sx={{ marginLeft: "30px" }}>Hours per week</FormLabel>
@@ -384,10 +394,10 @@ function GeneralRange(data1) {
                 sx={{ width: "70%", marginLeft: "30px" }}
                 disabled={false}
                 onChange={(e) => homeworkData(e.target.value, x.key)}
-                marks
+                marks = {[{value:getValue(x.name),label:getValue(x.name)}]}
                 value={data1[key[0]].filter(y => y.key === x.key)[0].value}
                 max={key[0] === "homework" ? 16 : key[0] === "personalTime" ? 50 : 70}
-                min={getValue(x.name)}
+                min={0}
                 valueLabelDisplay="auto"
               />
             </div>
@@ -403,29 +413,35 @@ function GeneralRange(data1) {
 function App() {
   const [count, setCount] = useState(false);
   const [school, setSchool] = useState(0);
-  const [personalTime, setPersonalTime] = useState([{ name: "generic personal time", value: 0, key: crypto.randomUUID() }]);
-  const [homework, setHomework] = useState([{ name: "Beginning Orchestra", value: 0, key: crypto.randomUUID() }]);
+  const [personalTime, setPersonalTime] = useState([{ name: "Athletics", value: 0, key: crypto.randomUUID() }, { name: "School Clubs", value: 0, key: crypto.randomUUID() }, { name: "Job", value: 0, key: crypto.randomUUID() }, { name: "Religious Activities", value: 0, key: crypto.randomUUID() }, { name: "Community Service", value: 0, key: crypto.randomUUID() }]);
+  const [homework, setHomework] = useState([{ name: "History", value: 0, key: crypto.randomUUID() }, { name: "English", value: 0, key: crypto.randomUUID() }, { name: "Mathematics", value: 0, key: crypto.randomUUID() }, { name: "Science", value: 0, key: crypto.randomUUID() }, { name: "Foreign Language", value: 0, key: crypto.randomUUID() }, { name: "Visual ands Performing Arts", value: 0, key: crypto.randomUUID() }, { name: "College Prep Elective", value: 0, key: crypto.randomUUID() }]);
   const [homeworkTotal, setHomeworkTotal] = useState(0);
   const [personalTimeTotal, setPersonalTimeTotal] = useState(0);
-  const [requires, setRequires] = useState([{ name: "sleep", value: 0, key: crypto.randomUUID() }]);
+  const [requires, setRequires] = useState([{ name: "sleep", value: 0, key: crypto.randomUUID() }, { name: "Necessities", value: 0, key: crypto.randomUUID() }, { name: "Down Time", value: 0, key: crypto.randomUUID() }, { name: "Family Time", value: 0, key: crypto.randomUUID() }, { name: "Play Time", value: 0, key: crypto.randomUUID() }]);
   const [requriesTotal, setRequiresTotal] = useState(0);
   const [total, setTotal] = useState(168);
   const [overLoad, setoverLoad] = useState(false);
   const [chooseSchools, setChooseSchools] = useState('Folsom');
+  //__Secure-
   const [cookies, setCookie, removeCookie] = useCookies(['Data']);
-  useEffect(()=>{
+  const [open, setOpen] = useState(true);
+  const [print, setPrint] = useState(false);
+  useEffect(() => {
     if (cookies) {
-      try{
+      try {
         setHomework(cookies.Data.homework);
         setPersonalTime(cookies.Data.personalTime);
         setRequires(cookies.Data.requires)
-      }catch(e){
-        setCookie("Data",{homework,personalTime,requires});
+        setOpen(cookies.Data.open);
+      } catch (e) {
+        //__Secure-
+        //domain: "maplesyrupy.github.io" 
+        setCookie("Data", { homework, personalTime, requires, open }, { sameSite: "strict", secure: "false" });
       }
-      
+
     }
 
-  },[])
+  }, [])
 
   useEffect(() => {
     if (total < 0) {
@@ -470,15 +486,29 @@ function App() {
     let calculation = 168 - (schoolValue + homeworkTotal + personalTimeTotal + requriesTotal);
     calculation = calculation || 0
     setTotal(calculation)
-    setCookie("Data", { homework, personalTime, requires }, { expires: new Date(newDate.getFullYear() + 1, newDate.getMonth(), newDate.getDay()) });
-  }, [homework, school, homeworkTotal, personalTime, personalTimeTotal, requires, requriesTotal]);
+    //__Secure-
+    //domain: "maplesyrupy.github.io",
+    setCookie("Data", { homework, personalTime, requires, open }, { expires: new Date(newDate.getFullYear() + 1, newDate.getMonth(), newDate.getDay()), sameSite: "strict" });
+  }, [homework, school, homeworkTotal, personalTime, personalTimeTotal, requires, requriesTotal, open]);
   function schoolData(x) {
     x = x || 0
     setSchool(parseInt(x));
 
 
   }
-
+  function deleteAll() {
+    setSchool(0);
+    setPersonalTime([{ name: "Athletics", value: 0, key: crypto.randomUUID() }, { name: "School Clubs", value: 0, key: crypto.randomUUID() }, { name: "Job", value: 0, key: crypto.randomUUID() }, { name: "Religious Activities", value: 0, key: crypto.randomUUID() }, { name: "Community Service", value: 0, key: crypto.randomUUID() }])
+    setHomework([{ name: "History", value: 0, key: crypto.randomUUID() }, { name: "English", value: 0, key: crypto.randomUUID() }, { name: "Mathematics", value: 0, key: crypto.randomUUID() }, { name: "Science", value: 0, key: crypto.randomUUID() }, { name: "Foreign Language", value: 0, key: crypto.randomUUID() }, { name: "Visual ands Performing Arts", value: 0, key: crypto.randomUUID() }, { name: "College Prep Elective", value: 0, key: crypto.randomUUID() }])
+    setHomeworkTotal(0)
+    setPersonalTimeTotal(0);
+    setRequires([{ name: "sleep", value: 0, key: crypto.randomUUID() }, { name: "Necessities", value: 0, key: crypto.randomUUID() }, { name: "Down Time", value: 0, key: crypto.randomUUID() }, { name: "Family Time", value: 0, key: crypto.randomUUID() }, { name: "Play Time", value: 0, key: crypto.randomUUID() }])
+    setRequiresTotal(0)
+    setChooseSchools('Folsom')
+    removeCookie("Data")
+  }
+  const contentRef = useRef(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
   return (
     <>
 
@@ -500,65 +530,142 @@ function App() {
           : ""
       }
 
-      <Grid id="MainGrid" container rowSpacing={1} columnSpacing={0} sx={{ minWidth: "95vw", minHeight: "95vh", boxShadow: "3" }}>
-        <Grid size={6} sx={{ borderRight: "1px black solid", height: '95vh', overflowY: 'hidden' }}>
+      <Grid id="MainGrid" container rowSpacing={1} columnSpacing={0} sx={{ minWidth: "95vw", minHeight: "95vh", boxShadow: "3" }} ref={contentRef} >
+        <Grid size={6} sx={print?{ borderRight: "1px black solid",height:"auto",overflow:"visible",overflowX:"auto"}:{ borderRight: "1px black solid", height:"98vh",overflow:"hidden",overflowX:"auto" }}>
+          {(print !== true) ? <>
+            <Select defaultValue="Folsom">
+              <Option onClick={() => setChooseSchools("Folsom")} value="Folsom" >Folsom High</Option>
+              <Option onClick={() => setChooseSchools('Cordova')} value="Cordova">Cordova High</Option>
+              <Option onClick={() => setChooseSchools('Vista')} value="Vista">Vista High</Option>
+            </Select>
+            <Tabs
+              aria-label="Vertical tabs"
+              orientation="vertical"
+              sx={{ minWidth: 300, height: '100%', borderRadius: '20px' }}
+            >
 
-          <Select defaultValue="Folsom">
-            <Option onClick={() => setChooseSchools("Folsom")} value="Folsom" >Folsom High</Option>
-            <Option onClick={() => setChooseSchools('Cordova')} value="Cordova">Cordova High</Option>
-            <Option onClick={() => setChooseSchools('Vista')} value="Vista">Vista High</Option>
-          </Select>
-          <Tabs
-            aria-label="Vertical tabs"
-            orientation="vertical"
-            sx={{ minWidth: 300, height: '100%', borderRadius: '20px' }}
-          >
-            <TabList>
-              <Tab>School</Tab>
-              <Tab>Personal Time</Tab>
-              <Tab>Necessities</Tab>
-            </TabList>
-            <TabPanel value={0} style={{ height: '90%', overflowY: "auto" }} >
+              <TabList>
+                <Tab>School</Tab>
+                <Tab>Personal Time</Tab>
+                <Tab>Necessities</Tab>
+                <Button onClick={() => setOpen(true)}>Tutorial</Button>
+                <Button onClick={() => deleteAll()}>Reset</Button>
+                <Button onClick={async () => { await setPrint(true), await reactToPrintFn() }}>Print</Button>
+              </TabList>
 
-              <h1 style={{ margin: "15px" }}>Classtime</h1>
-              <h2 style={{ margin: "15px" }}>Hours per week in school</h2>
-              <Slider
-                sx={{ width: "70%", marginLeft: "30px" }}
-                disabled={false}
-                onChange={(e) => schoolData(e.target.value)}
-                marks
-                value={school}
-                max={60}
-                min={0}
-                valueLabelDisplay="auto"
-              />
-              <GeneralRange homework={homework} setHomework={setHomework} chooseSchools={chooseSchools} />
+              <TabPanel value={0} style={{ height: '95%', overflowY: "auto" }} >
 
-            </TabPanel>
-            <TabPanel value={1} style={{ height: '90vh', overflowY: "auto" }}>
+                <h1 style={{ margin: "15px" }}>Classtime</h1>
+                <h2 style={{ margin: "15px" }}>Hours per week in school</h2>
+                <Slider
+                  sx={{ width: "70%", marginLeft: "30px" }}
+                  disabled={false}
+                  onChange={(e) => schoolData(e.target.value)}
+                  marks
+                  value={school}
+                  max={60}
+                  min={0}
+                  valueLabelDisplay="auto"
+                />
+                <GeneralRange homework={homework} setHomework={setHomework} chooseSchools={chooseSchools} />
 
-              <GeneralRange personalTime={personalTime} setPersonalTime={setPersonalTime} />
+              </TabPanel>
+              <TabPanel value={1} style={{ height: '95%', overflowY: "auto" }}>
 
-            </TabPanel>
-            <TabPanel value={2} style={{ height: '90vh', overflowY: "auto" }}>
+                <GeneralRange personalTime={personalTime} setPersonalTime={setPersonalTime} />
 
-              <GeneralRange requires={requires} setRequires={setRequires} />
+              </TabPanel>
+              <TabPanel value={2} style={{ height: '95%', overflowY: "auto" }}>
 
-            </TabPanel>
-          </Tabs>
+                <GeneralRange requires={requires} setRequires={setRequires} />
+
+              </TabPanel>
+            </Tabs>
+          </> :
+            <>
+              <div style={{ textAlign: "center",overflow:'visible'}} className="page-break">
+                <Table aria-label="basic table" sx = {{textAlign:"left"}}>
+                  <thead >
+                    <tr>
+                      <th style={{ width: '40%' }}>Topic</th>
+                      <th>Time</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {homework.map((x) =>
+
+                      x.name.length !== 0 ? <tr key={crypto.randomUUID()}><td>{x.name}</td><td>{x.value}</td></tr> : ""
+
+                    )}
+                    {personalTime.map((x) =>
+
+                      x.name.length !== 0 ? <tr key={crypto.randomUUID()}><td>{x.name}</td><td>{x.value}</td></tr> : ""
+
+                    )}
+                    {requires.map((x) =>
+
+                      x.name.length !== 0 ? <tr key={crypto.randomUUID()}><td>{x.name}</td><td>{x.value}</td></tr>: ""
+
+                    )}
+                    <tr>
+                      <td>Students Signature:________</td>
+                      <td>Parents Signature:________</td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </div>
+            </>
+          }
+
         </Grid>
         <Grid size={6} sx={{ display: 'flex', alignItems: "center", justifyContent: 'center', height: '95vh' }}>
-          <Piechart school={school} homeworkTotal={homeworkTotal} total={total} personalTimeTotal={personalTimeTotal} requriesTotal={requriesTotal} />
-          <div>
-            {
-              overLoad ? <Alert severity="error"  >
-                You are not History time traveller, you are now {total * -1} hours over.
-              </Alert> : ""
-            }
-          </div>
+          <>
+            <Piechart school={school} homeworkTotal={homeworkTotal} total={total} personalTimeTotal={personalTimeTotal} requriesTotal={requriesTotal} />
+            <div>
+              {
+                overLoad ? <Alert severity="error"  >
+                  You are not History time traveller, you are now {total * -1} hours over.
+                </Alert> : ""
+              }
+            </div>
+          </>
         </Grid>
 
-      </Grid>
+      </Grid >
+      <Modal open={open}>
+        <ModalDialog layout="center" sx={{ overflowY: "auto" }} >
+          <ModalClose onClick={() => setOpen(false)} />
+          <h1>Welcome to the Time Budget Planner APP!</h1>
+          <p >
+            <>
+              This short tutorial is intended to walk you through how to use this app.<br></br>
+              When you click into the main app you will see the page divided into two sections,
+              one section is taken up by a pie chart, while the other is where the main UI is.<br></br>
+              The budget planner is seperated into three seperate sections, the following instrutions will focus on the classwork section.<br></br>
+              When you click off this tutorial,
+              You should see several things, a slider,    <Slider
+                sx={{ width: "70%", marginLeft: "30px" }}
+                marks
+                valueLabelDisplay="auto"
+              /><br></br>
+              and a input bar. <Input sx={{ m: 2, width: "70%", marginLeft: "30px" }} /><br>
+              </br>
+              Unlike this input bar, the real input bar will expand into a list of search options when you click on it,
+              use it to find the classes you are taking next year to plan out your weeks. Furthermore, if you type in a subject like
+              Mathamatics, or History, the search algorithm will also filter the list of classes by subject allowing you to more easily
+              plan. <br></br>
+              However, you are not restricted by the classes as if you chose to, you can type in your own classes (example: folsom lake college class),
+              and gain more freedom in your time budget planning. <br></br>
+              You should also see a button. <br></br>  <Button sx={{ width: "70%", marginLeft: "30px", margin: "20px" }} variant="outlined">+</Button> <br>
+              </br>
+              This button will allow you to add more to your lists, so if you are taking a lot of extra classes, you can fit it into this budget planner.<br></br>
+              The other two sections operate via a similar concept, but with the exception of the dropdown with options.<br></br>
+              Last but not least, cookies are used in this app to store data, if you want to reset said cookie or reset the planner, just click the button saying reset.<br></br>
+              Enjoy!!
+            </>
+          </p>
+        </ModalDialog>
+      </Modal>
 
     </>
 
