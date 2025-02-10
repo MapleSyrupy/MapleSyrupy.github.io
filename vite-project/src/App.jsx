@@ -535,8 +535,8 @@ function App() {
           {(print !== true) ? <>
             <Select defaultValue="Folsom">
               <Option onClick={() => setChooseSchools("Folsom")} value="Folsom" >Folsom High</Option>
-              <Option onClick={() => setChooseSchools('Cordova')} value="Cordova">Cordova High</Option>
-              <Option onClick={() => setChooseSchools('Vista')} value="Vista">Vista High</Option>
+              <Option onClick={() => setChooseSchools('Cordova')} value="Cordova" disabled>Cordova High</Option>
+              <Option onClick={() => setChooseSchools('Vista')} value="Vista" disabled>Vista High</Option>
             </Select>
             <Tabs
               aria-label="Vertical tabs"
