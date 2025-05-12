@@ -7,6 +7,7 @@ import Slider from '@mui/joy/Slider';
 import Box from '@mui/joy/Box';
 import Button from '@mui/material/Button';
 import { matchSorter } from 'match-sorter';
+import { useMemo } from 'react';
 
 function GeneralRange(data1) {
   const key = Object.keys(data1);
@@ -296,6 +297,14 @@ function GeneralRange(data1) {
       return options;
     }
   };
+const selectedValues = useMemo(() => {
+  const valueMap = new Map(data1[key[0]].map(item => [item.key, item.name]));
+  return valueMap;
+}, [data1[key[0]]]);
+
+function getSelectedValue(key) {
+  return selectedValues.get(key) || "";
+}
 
   return (
     <>
@@ -313,11 +322,11 @@ function GeneralRange(data1) {
               placeholder="Type anything"
               groupBy={(option) => option.subject}
               options={options.sort((a, b) => b.subject.localeCompare(a.subject))}
-              getOptionLabel={(option) => option.Name || data1[key[0]].find((item) => item.key === x.key).name}
-              value={data1[key[0]].find((item) => item.key === x.key).name}
+              getOptionLabel={(option) => option.Name || getSelectedValue(x.key)}
+              value={getSelectedValue(x.key)}
               onInputChange={(event, value) => updatedItemData(value, x.key)}
               filterOptions={filterOptions}
-              slotProps={{input:{maxLength:40}}}
+              slotProps={{ input: { maxLength: 40 } }}
             />
           ) : (
             <Input sx={{ m: 2 }} defaultValue={x.name}  onChange={(event) => updatedItemData(event.target.value, x.key)} slotProps={{input:{maxLength:40}}}/>
