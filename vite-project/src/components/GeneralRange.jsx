@@ -265,6 +265,7 @@ function GeneralRange(data1) {
   }
 
   function updatedItemData(x, y) {
+    console.log("oh no")
     const updatedHomework = data1[key[0]].map((item) =>
       item.key !== y ? item : { ...item, name: x }
     );
@@ -324,7 +325,7 @@ function getSelectedValue(key) {
               options={options.sort((a, b) => b.subject.localeCompare(a.subject))}
               getOptionLabel={(option) => option.Name || getSelectedValue(x.key)}
               value={getSelectedValue(x.key)}
-              onInputChange={(event, value) => updatedItemData(value, x.key)}
+              onBlur={(event, value) => updatedItemData(value, x.key)}
               filterOptions={filterOptions}
               slotProps={{ input: { maxLength: 40 } }}
             />

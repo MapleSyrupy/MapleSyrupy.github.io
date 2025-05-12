@@ -292,7 +292,7 @@ function App() {
                 requires={state.requires}
               />
             </Box>
-            <Box
+            {/* <Box
               sx={{ width: "100%", height: "50vh", display: "flex", justifyContent: "center", alignItems: "center" }}
             >
               <PiechartSpecific
@@ -301,7 +301,7 @@ function App() {
                 requires={state.requires}
                 pageName={state.pageName}
               />
-            </Box>
+            </Box> */}
           </Stack>
         </Grid>
       </Grid>
