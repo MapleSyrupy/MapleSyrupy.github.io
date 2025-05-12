@@ -12,13 +12,16 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@mui/joy": "^5.0.0-beta.51",
-    "@mui/material": "^6.3.1",
-    "@mui/x-charts": "^7.23.2",
+    "@fontsource/roboto": "^5.2.5",
+    "@mui/joy": "^5.0.0-beta.52",
+    "@mui/material": "^7.1.0",
+    "@mui/x-charts": "^8.3.0",
+    "intro.js": "^7.2.0",
+    "intro.js-react": "^1.0.0",
     "match-sorter": "^8.0.0",
-    "react": "^18.3.1",
+    "react": "19.1.0",
     "react-cookie": "^7.2.2",
-    "react-dom": "^18.3.1",
+    "react-dom": "19.1.0",
     "react-to-print": "^3.0.5"
   },
   "devDependencies": {
