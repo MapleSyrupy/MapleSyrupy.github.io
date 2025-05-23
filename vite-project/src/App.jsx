@@ -1,6 +1,6 @@
-import { useReducer, useEffect, useRef } from 'react';
+import { useReducer, useEffect } from 'react';
 import { useCookies } from "react-cookie";
-import { useReactToPrint } from "react-to-print";
+
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Slider from '@mui/joy/Slider';
@@ -10,12 +10,7 @@ import Tabs from '@mui/joy/Tabs';
 import TabList from '@mui/joy/TabList';
 import Tab from '@mui/joy/Tab';
 import TabPanel from '@mui/joy/TabPanel';
-import Input from '@mui/joy/Input';
-import Table from '@mui/joy/Table';
 import Alert from '@mui/material/Alert';
-import Modal from '@mui/joy/Modal';
-import ModalClose from '@mui/joy/ModalClose';
-import ModalDialog from '@mui/joy/ModalDialog';
 import Piechart from './components/Piechart';
 import GeneralRange from './components/GeneralRange';
 import PiechartSpecific from './components/PiechartSpecific';
@@ -26,6 +21,7 @@ import introJs from 'intro.js';
 // import { Steps, Hints } from 'intro.js-react';
 import 'intro.js/introjs.css';
 import './App.css';
+import PrintContent from './components/PrintContent';
 
 
 const initialState = {
@@ -97,8 +93,8 @@ function reducer(state, action) {
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [cookies, setCookie, removeCookie] = useCookies(['Data']);
-  const contentRef = useRef(null);
-  const reactToPrintFn = useReactToPrint({ contentRef });
+
+
 
   useEffect(() => {
     if (cookies.Data) {
@@ -107,13 +103,13 @@ function App() {
         dispatch({ type: 'SET_PERSONAL_TIME', payload: cookies.Data.personalTime });
         dispatch({ type: 'SET_REQUIRES', payload: cookies.Data.requires });
         dispatch({ type: 'SET_SCHOOL', payload: cookies.Data.school });
-        dispatch({type:'SET_PAGE_NAME', payload: cookies.Data.pageName});
+        dispatch({ type: 'SET_PAGE_NAME', payload: cookies.Data.pageName });
         dispatch({ type: 'SET_OPEN', payload: cookies.Data.open });
       } catch {
-       
+
         setCookie("Data", initialState, { sameSite: "strict", secure: "false" });
       }
-    }else{
+    } else {
       introJs().start();
     }
   }, []);
@@ -137,45 +133,47 @@ function App() {
     const newDate = new Date();
     setCookie("Data", { ...state }, { expires: new Date(newDate.getFullYear() + 1, newDate.getMonth(), newDate.getDate()), sameSite: "strict" });
 
-  }, [state.homework, state.school, state.personalTime, state.requires, state.open,state.pageName]);
+  }, [state.homework, state.school, state.personalTime, state.requires, state.open, state.pageName]);
 
   function deleteAll() {
-     dispatch({ type: 'RESET' });
+    dispatch({ type: 'RESET' });
   }
+
 
 
   return (
     <>
-
-      <Grid
-        id="MainGrid"
-        container
-        rowSpacing={1}
-        columnSpacing={0}
-        sx={{ width: "100vw", height: "100vh", boxShadow: "3", overflowX: "hidden", overflowY: "hidden" }}
-        ref={contentRef}
-        data-intro="This is the main grid layout of the app, dividing the UI into two sections."
-      >
+      {!state.print ? (
         <Grid
-          size={6}
-          sx={state.print ? { borderRight: "1px black solid", overflow: "visible", overflowX: "auto" } : { borderRight: "1px black solid", height: "100%", overflow: "hidden", overflowX: "auto" }}
-          data-intro="This section contains the main UI elements like tabs and controls."
+          id="MainGrid"
+          container
+          rowSpacing={1}
+          columnSpacing={0}
+          sx={{ width: "100vw", height: "100vh", boxShadow: "3", overflowX: "hidden", overflowY: "hidden" }}
+          data-intro="This is the main grid layout of the app, dividing the UI into two sections."
+
         >
-          {state.total < 0 && (
-            <Snackbar
-              open
-              anchorOrigin={{ vertical: "top", horizontal: "center" }}
-            >
-              <Alert
-                severity="error"
-                variant="filled"
-                sx={{ width: '100%' }}
+          <Grid
+            size={6}
+            sx={state.print ? { borderRight: "1px black solid", overflow: "visible", overflowX: "auto" } : { borderRight: "1px black solid", height: "100%", overflow: "hidden", overflowX: "auto" }}
+            data-intro="This section contains the main UI elements like tabs and controls."
+
+          >
+            {state.total < 0 && (
+              <Snackbar
+                open
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
               >
-                You are not a time traveller, you are now {state.total * -1} hours over.
-              </Alert>
-            </Snackbar>
-          )}
-          {!state.print ? (
+                <Alert
+                  severity="error"
+                  variant="filled"
+                  sx={{ width: '100%' }}
+                >
+                  You are not a time traveller, you are now {state.total * -1} hours over.
+                </Alert>
+              </Snackbar>
+            )}
+
             <>
               <Select
                 defaultValue="Folsom"
@@ -189,18 +187,18 @@ function App() {
                 aria-label="Vertical tabs"
                 orientation="vertical"
                 sx={{ minWidth: 300, height: '100%', borderRadius: '20px' }}
-                onChange={(e,value) => dispatch({ type: 'SET_PAGE_NAME', payload: value })}
-                value = {state.pageName}
+                onChange={(e, value) => dispatch({ type: 'SET_PAGE_NAME', payload: value })}
+                value={state.pageName}
                 data-intro="These tabs allow you to navigate between different sections of the app."
               >
                 <TabList>
                   <Tab value="school">School</Tab>
                   <Tab value="personalTime">Personal Time</Tab>
                   <Tab value="necessities">Necessities</Tab>
-                  <Button onClick={()=>introJs().start()} data-intro="Click this button to open the tutorial.">Tutorial</Button>
+                  <Button onClick={() => introJs().start()} data-intro="Click this button to open the tutorial.">Tutorial</Button>
                   <Button onClick={deleteAll} data-intro="Click this button to reset all data.">Reset</Button>
                   <Button
-                    onClick={async () => { dispatch({ type: 'SET_PRINT', payload: true }); await reactToPrintFn(); }}
+                    onClick={() => { dispatch({ type: 'SET_PRINT', payload: true }) }}
                     disabled={state.total < 0 ? true : false}
                     data-intro="Click this button to print the current data."
                   >
@@ -248,38 +246,14 @@ function App() {
                 </TabPanel>
               </Tabs>
             </>
-          ) : (
-            <div
-              style={{ textAlign: "center", overflow: 'visible' }}
-            >
-              <Table aria-label="basic table" sx={{ textAlign: "left" }}>
-                <thead>
-                  <tr>
-                    <th style={{ width: '40%' }}>Topic</th>
-                    <th>Time</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {state.homework.map((x) => x.name.length !== 0 && <tr key={crypto.randomUUID()}><td>{x.name}</td><td>{x.value}</td></tr>)}
-                  {state.personalTime.map((x) => x.name.length !== 0 && <tr key={crypto.randomUUID()}><td>{x.name}</td><td>{x.value}</td></tr>)}
-                  {state.requires.map((x) => x.name.length !== 0 && <tr key={crypto.randomUUID()}><td>{x.name}</td><td>{x.value}</td></tr>)}
-                  <tr>
-                    <td>Students Signature:________</td>
-                    <td>Parents Signature:________</td>
-                  </tr>
-                </tbody>
-              </Table>
-            </div>
-          )}
-        </Grid>
-        <Grid
-          size={6}
-          data-intro="This section contains the pie charts for visualizing data."
-        >
-          <Stack
+
+          </Grid>
+          <Grid
+            size={6}
+            data-intro="This section contains the pie charts for visualizing data."
+            id="PieChartGrid"
           >
-            <Box
-              sx={{ width: "100%", height: "50vh", display: "flex", justifyContent: "center", alignItems: "center" }}
+            <Stack sx={{ height: "100vh" }}
             >
               <Piechart
                 school={state.school}
@@ -291,21 +265,24 @@ function App() {
                 personalTime={state.personalTime}
                 requires={state.requires}
               />
-            </Box>
-            {/* <Box
-              sx={{ width: "100%", height: "50vh", display: "flex", justifyContent: "center", alignItems: "center" }}
-            >
-              <PiechartSpecific
-                homework={state.homework}
-                personalTime={state.personalTime}
-                requires={state.requires}
-                pageName={state.pageName}
-              />
-            </Box> */}
-          </Stack>
+            <PiechartSpecific
+                    homework={state.homework}
+                    personalTime={state.personalTime}
+                    requires={state.requires}
+                    pageName={state.pageName}
+                  />
+              
+            </Stack>
+          </Grid>
         </Grid>
-      </Grid>
+      ) : (
 
+        <PrintContent school={state.school}
+          homeworkTotal={state.homeworkTotal}
+          total={state.total}
+          personalTimeTotal={state.personalTimeTotal}
+          requriesTotal={state.requiresTotal} />
+      )}
     </>
   );
 }

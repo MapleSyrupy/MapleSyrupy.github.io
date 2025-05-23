@@ -265,7 +265,7 @@ function GeneralRange(data1) {
   }
 
   function updatedItemData(x, y) {
-    console.log("oh no")
+    console.log(x)
     const updatedHomework = data1[key[0]].map((item) =>
       item.key !== y ? item : { ...item, name: x }
     );
@@ -306,7 +306,7 @@ const selectedValues = useMemo(() => {
 function getSelectedValue(key) {
   return selectedValues.get(key) || "";
 }
-
+console.log(data1[key[0]])
   return (
     <>
       <h2 style={{ margin: "15px" }}>
@@ -324,8 +324,9 @@ function getSelectedValue(key) {
               groupBy={(option) => option.subject}
               options={options.sort((a, b) => b.subject.localeCompare(a.subject))}
               getOptionLabel={(option) => option.Name || getSelectedValue(x.key)}
-              value={getSelectedValue(x.key)}
-              onBlur={(event, value) => updatedItemData(value, x.key)}
+              value = {x.name}
+              // value={getSelectedValue(x.key)}
+              onBlur={(event)=>updatedItemData(event.target.value,x.key)}
               filterOptions={filterOptions}
               slotProps={{ input: { maxLength: 40 } }}
             />

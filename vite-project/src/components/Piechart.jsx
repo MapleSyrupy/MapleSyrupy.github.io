@@ -25,18 +25,18 @@ function Piechart({ school, total, homeworkTotal, personalTimeTotal, requriesTot
   return (
     <PieChart
       series={series}
-     height={700}
       width={500}
-      slotProps={
-        {
-          legend: {
-            sx: {
-              height:"25vh",
-                width:"10vw",
-            }
-          }
-        }
-      }
+       slotProps={{
+            legend: {
+              sx: {
+                width:"20%",
+                display: "flex",
+                flexWrap: "nowrap",
+                wordBreak: "break-word",
+                textAlign: "left",
+              },
+            },
+          }}
     />
   );
 }

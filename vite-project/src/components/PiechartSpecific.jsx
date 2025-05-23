@@ -114,7 +114,7 @@ function PiechartSpecific({ homework, personalTime, requires, pageName }) {
     // sx={{ width: "25vw", height: "100vh", justifyContent: 'center', display: 'flex', alignItems: 'center' }}
     // <Stack spacing={5} sx={{ width: "23vw", height: "100vh", justifyContent: 'center', display: 'flex', alignItems: 'center', textAlign: 'center' }}>
     <>
-      {state.MainPieChartActive === true ? (
+      {/* {state.MainPieChartActive === true ? ( */}
         <PieChart
           series={
             pageName === "school"
@@ -123,26 +123,26 @@ function PiechartSpecific({ homework, personalTime, requires, pageName }) {
                 ? homeworkPersonalTimeseries
                 : requiresSeries
           }
-          height={700}
+        
           width={500}
           loading={state.MainPieChartActive === true ? false : true}
           slotProps={{
             legend: {
               sx: {
-                height:"25vh",
-                width:"10vw",
+                width:"20%",
+                height:"50%",
                 display: "flex",
                 flexWrap: "nowrap",
                 overflowY: "scroll",
                 wordBreak: "break-word",
-                textAlign: "left"
+                textAlign: "left",
               },
             },
           }}
         />
-      ) : (
-        <h1 style = {{fontFamily:"sans-serif"}}>NO DATA</h1>
-      )}
+       {/* ) : (
+        ""
+      ) */}
     </>
   )
       /* <Box sx={{ width: "100%", height: "100%", justifyContent: 'center', display: 'flex', alignItems: 'center', textAlign: 'center' }}>
