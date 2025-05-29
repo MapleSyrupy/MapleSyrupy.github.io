@@ -1,6 +1,4 @@
 import { PieChart } from '@mui/x-charts/PieChart';
-import Box from "@mui/joy/Box";
-import { Stack } from '@mui/material';
 import { useEffect, useReducer } from 'react';
 
 function PiechartSpecific({ homework, personalTime, requires, pageName }) {

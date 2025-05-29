@@ -15,7 +15,6 @@ import Piechart from './components/Piechart';
 import GeneralRange from './components/GeneralRange';
 import PiechartSpecific from './components/PiechartSpecific';
 import { Stack } from '@mui/material';
-import Box from "@mui/joy/Box";
 import Snackbar from '@mui/material/Snackbar';
 import introJs from 'intro.js';
 // import { Steps, Hints } from 'intro.js-react';
