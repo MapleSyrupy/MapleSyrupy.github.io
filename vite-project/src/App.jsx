@@ -110,7 +110,13 @@ function App() {
         setCookie("Data", initialState, { sameSite: "strict", secure: "false" });
       }
     } else {
-      introJs().start();
+      introJs().setOptions({
+        exitOnOverlayClick: false,
+        exitOnEsc: false,
+        showProgress: true,
+      }).start();
+
+
     }
   }, []);
 
@@ -150,7 +156,8 @@ function App() {
           rowSpacing={1}
           columnSpacing={0}
           sx={{ width: "100vw", height: "100vh", boxShadow: "3", overflowX: "hidden", overflowY: "hidden" }}
-          data-intro="This is the main grid layout of the app, dividing the UI into two sections."
+
+
 
         >
           <Grid
@@ -173,29 +180,34 @@ function App() {
                 </Alert>
               </Snackbar>
             )}
-
+            <Select
+              defaultValue="Folsom"
+              data-intro="This dropdown allows you to select your school."
+              data-step="6"
+            >
+              <Option onClick={() => dispatch({ type: 'SET_SCHOOL', payload: 'Folsom' })} value="Folsom">Folsom High</Option>
+              <Option onClick={() => dispatch({ type: 'SET_SCHOOL', payload: 'Cordova' })} value="Cordova" disabled>Cordova High</Option>
+              <Option onClick={() => dispatch({ type: 'SET_SCHOOL', payload: 'Vista' })} value="Vista" disabled>Vista High</Option>
+            </Select>
             <>
-              <Select
-                defaultValue="Folsom"
-                data-intro="This dropdown allows you to select your school."
-              >
-                <Option onClick={() => dispatch({ type: 'SET_SCHOOL', payload: 'Folsom' })} value="Folsom">Folsom High</Option>
-                <Option onClick={() => dispatch({ type: 'SET_SCHOOL', payload: 'Cordova' })} value="Cordova" disabled>Cordova High</Option>
-                <Option onClick={() => dispatch({ type: 'SET_SCHOOL', payload: 'Vista' })} value="Vista" disabled>Vista High</Option>
-              </Select>
+
               <Tabs
                 aria-label="Vertical tabs"
                 orientation="vertical"
                 sx={{ minWidth: 300, height: '100%', borderRadius: '20px' }}
                 onChange={(e, value) => dispatch({ type: 'SET_PAGE_NAME', payload: value })}
                 value={state.pageName}
-                data-intro="These tabs allow you to navigate between different sections of the app."
+
               >
-                <TabList>
+                <TabList data-intro="These tabs allow you to navigate between different sections of the app.">
                   <Tab value="school">School</Tab>
                   <Tab value="personalTime">Personal Time</Tab>
                   <Tab value="necessities">Necessities</Tab>
-                  <Button onClick={() => introJs().start()} data-intro="Click this button to open the tutorial.">Tutorial</Button>
+                  <Button onClick={() => introJs().setOptions({
+                    exitOnOverlayClick: false,
+                    exitOnEsc: false,
+                    showProgress: true,
+                  }).start()} data-intro="Click this button to open the tutorial.">Tutorial</Button>
                   <Button onClick={deleteAll} data-intro="Click this button to reset all data.">Reset</Button>
                   <Button
                     onClick={() => { dispatch({ type: 'SET_PRINT', payload: true }) }}
@@ -265,24 +277,26 @@ function App() {
                 personalTime={state.personalTime}
                 requires={state.requires}
               />
-            <PiechartSpecific
-                    homework={state.homework}
-                    personalTime={state.personalTime}
-                    requires={state.requires}
-                    pageName={state.pageName}
-                  />
-              
+              <PiechartSpecific
+                homework={state.homework}
+                personalTime={state.personalTime}
+                requires={state.requires}
+                pageName={state.pageName}
+              />
+
             </Stack>
           </Grid>
-        </Grid>
+        </Grid >
       ) : (
 
         <PrintContent school={state.school}
           homeworkTotal={state.homeworkTotal}
           total={state.total}
           personalTimeTotal={state.personalTimeTotal}
-          requriesTotal={state.requiresTotal} />
-      )}
+          requriesTotal={state.requiresTotal}
+          setPrintStatus={(payload) => dispatch({ type: "SET_PRINT", payload })} />
+      )
+      }
     </>
   );
 }

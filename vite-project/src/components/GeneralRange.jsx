@@ -331,17 +331,17 @@ console.log(data1[key[0]])
               slotProps={{ input: { maxLength: 40 } }}
             />
           ) : (
-            <Input sx={{ m: 2 }} defaultValue={x.name}  onChange={(event) => updatedItemData(event.target.value, x.key)} slotProps={{input:{maxLength:40}}}/>
+            <Input sx={{ m: 2 }} defaultValue={x.name}  onBlur={(event) => updatedItemData(event.target.value, x.key)} slotProps={{input:{maxLength:40}}}/>
           )}
           <FormLabel sx={{ marginLeft: "30px" }}>Hours per week</FormLabel>
           <Slider
-            sx={{ width: "70%", marginLeft: "30px", marginTop: "10px" }}
+            sx={{ width: "70%", marginLeft: "30px", marginTop: "20px" }}
             onChange={(e) => itemData(e.target.value, x.key)}
             marks={key[0]==="homework"?[{ value: getValue(x.name), label: getValue(x.name) }]:true}
             value={data1[key[0]].find((item) => item.key === x.key).value}
             max={key[0] === "homework" ? 16 : key[0] === "personalTime" ? 50 : 70}
             min={0}
-            valueLabelDisplay="auto"
+            valueLabelDisplay="on"
           />
         </div>
       ))}
