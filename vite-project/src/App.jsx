@@ -137,7 +137,7 @@ function App() {
     });
 
     const newDate = new Date();
-    setCookie("Data", { ...state }, { expires: new Date(newDate.getFullYear() + 1, newDate.getMonth(), newDate.getDate()), sameSite: "strict" });
+    setCookie("Data", { ...state }, { expires: new Date(newDate.getFullYear() + 1, newDate.getMonth(), newDate.getDate()), sameSite: "strict",secure:"true" });
 
   }, [state.homework, state.school, state.personalTime, state.requires, state.open, state.pageName]);
 

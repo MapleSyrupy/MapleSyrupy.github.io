@@ -265,7 +265,6 @@ function GeneralRange(data1) {
   }
 
   function updatedItemData(x, y) {
-    console.log(x)
     const updatedHomework = data1[key[0]].map((item) =>
       item.key !== y ? item : { ...item, name: x }
     );
@@ -306,7 +305,6 @@ const selectedValues = useMemo(() => {
 function getSelectedValue(key) {
   return selectedValues.get(key) || "";
 }
-console.log(data1[key[0]])
   return (
     <>
       <h2 style={{ margin: "15px" }}>

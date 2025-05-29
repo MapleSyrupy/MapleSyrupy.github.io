@@ -4,8 +4,8 @@ import { PieChart } from '@mui/x-charts/PieChart';
 import { useEffect, useRef } from 'react';
 import { useReactToPrint } from "react-to-print";
 import { useState } from 'react';
-export default function PrintContent({ school, total, homeworkTotal, personalTimeTotal, requriesTotal,setPrintStatus }) {
-  const [returnTrue,setReturnTrue] = useState(false);
+export default function PrintContent({ school, total, homeworkTotal, personalTimeTotal, requriesTotal, setPrintStatus }) {
+  const [returnTrue, setReturnTrue] = useState(false);
   const contentRef = useRef(null);
   const reactToPrintFn = useReactToPrint({ contentRef });
   useEffect(() => {
@@ -14,7 +14,7 @@ export default function PrintContent({ school, total, homeworkTotal, personalTim
       setReturnTrue(true);
     }, 1000)
 
-  },[]);
+  }, []);
   // const homeworkSeries = [
   //     {
   //         innerRadius: 0,
@@ -120,7 +120,8 @@ export default function PrintContent({ school, total, homeworkTotal, personalTim
     // sx={{ width: "25vw", height: "100vh", justifyContent: 'center', display: 'flex', alignItems: 'center' }}
     // <Stack spacing={5} sx={{ width: "23vw", height: "100vh", justifyContent: 'center', display: 'flex', alignItems: 'center', textAlign: 'center' }}>
     <>
-      <Stack sx={{ height: "100vh", width: "100%", textAlign: "center" }} direction={"column"} ref={contentRef}>
+     <div style = {{width:"100vw", height:"100vh", display:"flex", justifyContent:"center", alignItems:"center"}}>
+      <Stack sx={{ height: "80%", width: "80%", textAlign: "center" }} direction={"column"} ref={contentRef}>
         {/* <PieChart
                     series={
                         homeworkSeries
@@ -142,16 +143,17 @@ export default function PrintContent({ school, total, homeworkTotal, personalTim
                     }
                     width={500}
                 /> */}
-        <Piechart school={school} total={total} homeworkTotal={homeworkTotal} personalTimeTotal={personalTimeTotal} requriesTotal={requriesTotal} />
-        <div>
+       
+          <Piechart school={school} total={total} homeworkTotal={homeworkTotal} personalTimeTotal={personalTimeTotal} requriesTotal={requriesTotal} />
+
           <h1>Parent Signature</h1>
           <p>__________________</p>
           <h1>Student Signature</h1>
           <p>__________________</p>
-        </div>
-        {returnTrue ? <Button sx = {{borderRadius:0}}  onClick = {()=>setPrintStatus(false)}>Return</Button>:""}
+   
+        {returnTrue ? <Button sx={{ borderRadius: 0 }} onClick={() => setPrintStatus(false)}>Return</Button> : ""}
       </Stack>
-
+     </div>
     </>
   )
 }
