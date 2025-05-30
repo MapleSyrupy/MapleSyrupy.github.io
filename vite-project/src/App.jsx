@@ -88,14 +88,14 @@ function reducer(state, action) {
       return state;
   }
 }
-
+ 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [cookies, setCookie, removeCookie] = useCookies(['Data']);
 
 
 
-  useEffect(() => {
+ useEffect(() => {
     if (cookies.Data) {
       try {
         dispatch({ type: 'SET_HOMEWORK', payload: cookies.Data.homework });
@@ -136,8 +136,8 @@ function App() {
     });
 
     const newDate = new Date();
-    setCookie("Data", { ...state }, { expires: new Date(newDate.getFullYear() + 1, newDate.getMonth(), newDate.getDate()), sameSite: "strict",secure:"true" });
 
+    setCookie("Data", { ...state }, { expires: new Date(newDate.getFullYear() + 1, newDate.getMonth(), newDate.getDate()), sameSite: "strict",secure:"true" });
   }, [state.homework, state.school, state.personalTime, state.requires, state.open, state.pageName]);
 
   function deleteAll() {

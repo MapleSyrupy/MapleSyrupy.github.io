@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import FormLabel from '@mui/joy/FormLabel';
 import Chip from '@mui/joy/Chip';
 import Autocomplete from '@mui/joy/Autocomplete';
@@ -253,6 +253,7 @@ function GeneralRange(data1) {
     }
   }, [data1]);
 
+
   function addItem() {
     data1[key[1]]([...data1[key[0]], { name: "", value: 0, key: crypto.randomUUID() }]);
   }
@@ -263,7 +264,17 @@ function GeneralRange(data1) {
     );
     data1[key[1]](updatedHomework);
   }
+  // Place this outside the component to persist across renders
+  const timeoutRef = useRef();
 
+  function updateLocalRangeData(data, id) {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
+      updatedItemData(data, id);
+    }, 500);
+  }
   function updatedItemData(x, y) {
     const updatedHomework = data1[key[0]].map((item) =>
       item.key !== y ? item : { ...item, name: x }
@@ -297,14 +308,14 @@ function GeneralRange(data1) {
       return options;
     }
   };
-const selectedValues = useMemo(() => {
-  const valueMap = new Map(data1[key[0]].map(item => [item.key, item.name]));
-  return valueMap;
-}, [data1[key[0]]]);
+  const selectedValues = useMemo(() => {
+    const valueMap = new Map(data1[key[0]].map(item => [item.key, item.name]));
+    return valueMap;
+  }, [data1[key[0]]]);
 
-function getSelectedValue(key) {
-  return selectedValues.get(key) || "";
-}
+  function getSelectedValue(key) {
+    return selectedValues.get(key) || "";
+  }
   return (
     <>
       <h2 style={{ margin: "15px" }}>
@@ -322,20 +333,33 @@ function getSelectedValue(key) {
               groupBy={(option) => option.subject}
               options={options.sort((a, b) => b.subject.localeCompare(a.subject))}
               getOptionLabel={(option) => option.Name || getSelectedValue(x.key)}
-              value = {x.name}
-              // value={getSelectedValue(x.key)}
-              onBlur={(event)=>updatedItemData(event.target.value,x.key)}
+              value={x.name}
+              onInputChange={(event, value, reason) => {
+                if (reason === 'input' ) {
+                  updateLocalRangeData(value, x.key);
+                }
+              }}
+              onChange={(event, value) => {
+                // value can be string (freeSolo) or object (option)
+                if (typeof value === 'string') {
+                  updateLocalRangeData(value, x.key);
+                } else if (value && value.Name) {
+                  updateLocalRangeData(value.Name, x.key);
+                } else if (!value) {
+                  updateLocalRangeData('', x.key);
+                }
+              }}
               filterOptions={filterOptions}
               slotProps={{ input: { maxLength: 40 } }}
             />
           ) : (
-            <Input sx={{ m: 2 }} defaultValue={x.name}  onBlur={(event) => updatedItemData(event.target.value, x.key)} slotProps={{input:{maxLength:40}}}/>
+            <Input sx={{ m: 2 }} defaultValue={x.name} onChange={(event) => { updateLocalRangeData(event.target.value, x.key) }} slotProps={{ input: { maxLength: 40 } }} />
           )}
           <FormLabel sx={{ marginLeft: "30px" }}>Hours per week</FormLabel>
           <Slider
             sx={{ width: "70%", marginLeft: "30px", marginTop: "20px" }}
             onChange={(e) => itemData(e.target.value, x.key)}
-            marks={key[0]==="homework"?[{ value: getValue(x.name), label: getValue(x.name) }]:true}
+            marks={key[0] === "homework" ? [{ value: getValue(x.name), label: getValue(x.name) }] : true}
             value={data1[key[0]].find((item) => item.key === x.key).value}
             max={key[0] === "homework" ? 16 : key[0] === "personalTime" ? 50 : 70}
             min={0}
@@ -343,8 +367,8 @@ function getSelectedValue(key) {
           />
         </div>
       ))}
-      <Box sx={{ display: "flex", justifyContent: "center", margin:3 }}>
-        <Button sx={{ width: "50%",marginBottom:2 }} variant="outlined" size="large" onClick={addItem} >+</Button>
+      <Box sx={{ display: "flex", justifyContent: "center", margin: 3 }}>
+        <Button sx={{ width: "50%", marginBottom: 2 }} variant="outlined" size="large" onClick={addItem} >+</Button>
       </Box>
     </>
   );
